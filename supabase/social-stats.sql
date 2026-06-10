@@ -1,0 +1,7 @@
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS spotify_followers INTEGER;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS youtube_subscribers INTEGER;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS instagram_followers INTEGER;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS tiktok_followers INTEGER;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS monthly_listeners INTEGER;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS stats_updated_at TIMESTAMPTZ;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS notifications_opt_out BOOLEAN DEFAULT false;
