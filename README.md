@@ -49,7 +49,18 @@ npm run dev
 
 ## Implementation Status
 
-The project structure, config files, Supabase schema, shared layout, reusable
-components, and landing page are implemented first. The remaining pages are
-scaffolded so the route tree exists, and each will be completed after approval
-in the requested build order.
+All pages from the original build order are implemented, plus several features
+beyond it:
+
+- Localized routes (`fr`, `en`, `nl`, `de`) via `next-intl`
+- Landing page, magic-link auth, artist dashboard, profile editor
+  (profile / portfolio / EPK / availability tabs)
+- Artist directory and public artist profiles
+- Opportunities feed and detail pages with applications
+- Admin panel (role-gated): stats, reporting, CSV exports, management of
+  opportunities, partners, places, and users
+- Operator dashboard (role-gated) with own opportunities and artist reviews
+- Public EPK pages (`/epk/[slug]`) with ZIP download
+- Realtime messaging between artists and operators
+- Availability calendar, cultural places map (Mapbox), Spotify sync,
+  transactional emails (Resend), web push notifications, PWA

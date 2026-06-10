@@ -1,4 +1,10 @@
 {
+  "action_feedback": {
+    "error": "De actie is mislukt: {message}",
+    "saved": "Wijzigingen opgeslagen.",
+    "created": "Item aangemaakt.",
+    "deleted": "Item verwijderd."
+  },
   "common": {
     "not_specified": "Niet opgegeven",
     "belgium": "België",
@@ -28,7 +34,8 @@
     "account": "Mijn account",
     "edit_profile": "Mijn profiel bewerken",
     "messages": "Berichten",
-    "availability": "Beschikbaarheid"
+    "availability": "Beschikbaarheid",
+    "places": "Culturele plekken"
   },
   "footer": {
     "description": "Een digitaal cultureel platform voor onafhankelijke Belgische kunstenaars, opgericht door MonsPax ASBL.",
@@ -149,6 +156,7 @@
     "epk_view": "Mijn EPK bekijken",
     "epk_copy": "Link kopiëren",
     "epk_share_success": "Link gekopieerd!",
+    "epk_setup": "Mijn EPK aanmaken",
     "availability_title": "Mijn beschikbaarheid",
     "availability_description": "Laat programmatoren weten wanneer je beschikbaar, onzeker of niet beschikbaar bent.",
     "availability_manage": "Beschikbaarheid beheren",
@@ -315,7 +323,8 @@
     "rating_filter_3": "??? 3+ sterren",
     "rating_filter_4": "???? 4+ sterren",
     "rating_filter_5": "????? Alleen 5 sterren",
-    "performances_count": "optredens"
+    "performances_count": "optredens",
+    "spotify_top_tracks": "Toptracks op Spotify"
   },
   "artist_profile": {
     "bio": "Bio",

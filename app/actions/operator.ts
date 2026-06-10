@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { getActionFeedback } from "@/lib/action-feedback";
+import type { ActionFeedbackResult } from "@/lib/action-state";
 import { localizedPath } from "@/lib/routes";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -32,10 +34,6 @@ function getText(formData: FormData, key: string) {
 
 function getLocale(formData: FormData) {
   return getText(formData, "locale") || "fr";
-}
-
-function logActionError(scope: string, error: string) {
-  console.error(`[operator action] ${scope}: ${error}`);
 }
 
 async function assertOperatorAccess(locale: string) {
@@ -73,9 +71,10 @@ function revalidateOperatorDashboard(locale: string) {
   revalidatePath(localizedPath(locale, "/opportunities"));
 }
 
-export async function createOperatorOpportunity(formData: FormData) {
+export async function createOperatorOpportunity(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
   const { adminSupabase, user } = await assertOperatorAccess(locale);
+  const feedback = await getActionFeedback("operator action", locale);
   const parsed = opportunitySchema.safeParse({
     category: getText(formData, "category"),
     contact_email: getText(formData, "contact_email"),
@@ -88,8 +87,7 @@ export async function createOperatorOpportunity(formData: FormData) {
   });
 
   if (!parsed.success) {
-    logActionError("createOperatorOpportunity", "Invalid opportunity payload");
-    return;
+    return feedback.error("createOperatorOpportunity", "Invalid opportunity payload");
   }
 
   const { error } = await adminSupabase.from("opportunities").insert({
@@ -99,16 +97,17 @@ export async function createOperatorOpportunity(formData: FormData) {
   });
 
   if (error) {
-    logActionError("createOperatorOpportunity", error.message);
-    return;
+    return feedback.error("createOperatorOpportunity", error.message);
   }
 
   revalidateOperatorDashboard(locale);
+  return feedback.created();
 }
 
-export async function updateOperatorOpportunity(formData: FormData) {
+export async function updateOperatorOpportunity(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
   const { adminSupabase, user } = await assertOperatorAccess(locale);
+  const feedback = await getActionFeedback("operator action", locale);
   const id = getText(formData, "id");
   const parsed = opportunitySchema.safeParse({
     category: getText(formData, "category"),
@@ -122,8 +121,7 @@ export async function updateOperatorOpportunity(formData: FormData) {
   });
 
   if (!id || !parsed.success) {
-    logActionError("updateOperatorOpportunity", "Invalid opportunity payload");
-    return;
+    return feedback.error("updateOperatorOpportunity", "Invalid opportunity payload");
   }
 
   const { error } = await adminSupabase
@@ -133,22 +131,22 @@ export async function updateOperatorOpportunity(formData: FormData) {
     .eq("operator_id", user.id);
 
   if (error) {
-    logActionError("updateOperatorOpportunity", error.message);
-    return;
+    return feedback.error("updateOperatorOpportunity", error.message);
   }
 
   revalidateOperatorDashboard(locale);
+  return feedback.saved();
 }
 
-export async function toggleOperatorOpportunityActive(formData: FormData) {
+export async function toggleOperatorOpportunityActive(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
   const { adminSupabase, user } = await assertOperatorAccess(locale);
+  const feedback = await getActionFeedback("operator action", locale);
   const id = getText(formData, "id");
   const isActive = getText(formData, "is_active") === "true";
 
   if (!id) {
-    logActionError("toggleOperatorOpportunityActive", "Missing opportunity id");
-    return;
+    return feedback.error("toggleOperatorOpportunityActive", "Missing opportunity id");
   }
 
   const { error } = await adminSupabase
@@ -158,16 +156,17 @@ export async function toggleOperatorOpportunityActive(formData: FormData) {
     .eq("operator_id", user.id);
 
   if (error) {
-    logActionError("toggleOperatorOpportunityActive", error.message);
-    return;
+    return feedback.error("toggleOperatorOpportunityActive", error.message);
   }
 
   revalidateOperatorDashboard(locale);
+  return feedback.saved();
 }
 
-export async function createArtistReview(formData: FormData) {
+export async function createArtistReview(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
   const { adminSupabase, user } = await assertOperatorAccess(locale);
+  const feedback = await getActionFeedback("operator action", locale);
   const parsed = reviewSchema.safeParse({
     comment: getText(formData, "comment"),
     opportunity_id: getText(formData, "opportunity_id"),
@@ -176,8 +175,7 @@ export async function createArtistReview(formData: FormData) {
   });
 
   if (!parsed.success) {
-    logActionError("createArtistReview", "Invalid review payload");
-    return;
+    return feedback.error("createArtistReview", "Invalid review payload");
   }
 
   const { data: matching, error: matchingError } = await adminSupabase
@@ -189,16 +187,14 @@ export async function createArtistReview(formData: FormData) {
     .maybeSingle();
 
   if (matchingError) {
-    logActionError("createArtistReview", matchingError.message);
-    return;
+    return feedback.error("createArtistReview", matchingError.message);
   }
   const opportunity = Array.isArray(matching?.opportunity)
     ? matching?.opportunity[0]
     : matching?.opportunity;
 
   if (opportunity?.operator_id !== user.id) {
-    logActionError("createArtistReview", "Review is not allowed for this opportunity");
-    return;
+    return feedback.error("createArtistReview", "Review is not allowed for this opportunity");
   }
 
   const { error } = await adminSupabase.from("artist_reviews").insert({
@@ -211,10 +207,10 @@ export async function createArtistReview(formData: FormData) {
   });
 
   if (error) {
-    logActionError("createArtistReview", error.message);
-    return;
+    return feedback.error("createArtistReview", error.message);
   }
 
   revalidateOperatorDashboard(locale);
   revalidatePath(localizedPath(locale, `/artists/${parsed.data.profile_id}`));
+  return feedback.created();
 }

@@ -1,4 +1,10 @@
 {
+  "action_feedback": {
+    "error": "The action failed: {message}",
+    "saved": "Changes saved.",
+    "created": "Item created.",
+    "deleted": "Item deleted."
+  },
   "common": {
     "not_specified": "Not specified",
     "belgium": "Belgium",
@@ -28,7 +34,8 @@
     "account": "My account",
     "edit_profile": "Edit my profile",
     "messages": "Messages",
-    "availability": "Availability"
+    "availability": "Availability",
+    "places": "Cultural venues"
   },
   "footer": {
     "description": "A digital cultural platform for independent Belgian artists, created by MonsPax ASBL.",
@@ -149,6 +156,7 @@
     "epk_view": "View my EPK",
     "epk_copy": "Copy link",
     "epk_share_success": "Link copied!",
+    "epk_setup": "Create my EPK",
     "availability_title": "My availability",
     "availability_description": "Tell programmers when you are available, tentative, or unavailable.",
     "availability_manage": "Manage availability",

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { startConversation } from "@/app/actions/messages";
+import { ActionFeedbackForm } from "@/components/ActionFeedbackForm";
 import { ApplyOpportunityButton } from "@/components/ApplyOpportunityButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -139,7 +140,7 @@ export default async function OpportunityDetailPage({ params }: OpportunityDetai
               </CardHeader>
               <CardContent>
                 {user ? (
-                  <form action={startConversation} className="flex flex-col gap-3">
+                  <ActionFeedbackForm action={startConversation} className="flex flex-col gap-3">
                     <input type="hidden" name="locale" value={locale} />
                     <input type="hidden" name="opportunity_id" value={id} />
                     <Textarea
@@ -152,7 +153,7 @@ export default async function OpportunityDetailPage({ params }: OpportunityDetai
                     <Button type="submit" className="self-start">
                       {t("message_operator_send")}
                     </Button>
-                  </form>
+                  </ActionFeedbackForm>
                 ) : (
                   <Button asChild>
                     <Link href={localizedPath(locale, "/auth")}>{t("message_operator_sign_in")}</Link>

@@ -14,7 +14,7 @@ import { getProfileCompletion, type ProfileCompletionKey } from "@/lib/profile-c
 import { localizedPath } from "@/lib/routes";
 import { createClient } from "@/lib/supabase/server";
 import type { Matching, Opportunity } from "@/lib/types";
-import { cn, formatDate, generateSlug, getInitials } from "@/lib/utils";
+import { cn, formatDate, getInitials } from "@/lib/utils";
 
 type ApplicationWithOpportunity = Matching & {
   opportunity: Pick<Opportunity, "id" | "title"> | null;
@@ -73,8 +73,8 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   const recommendedOpportunities = recommendedResponse.data ?? [];
   const displayName = profile?.stage_name || profile?.full_name || user.email || t("artist_fallback");
   const completion = getProfileCompletion(profile);
-  const epkSlug = profile?.slug || `${generateSlug(profile?.stage_name || profile?.full_name, "artiste")}-${user.id.slice(0, 8)}`;
-  const epkPath = `/epk/${epkSlug}`;
+  // The EPK page resolves by the saved slug only — a guessed slug would 404.
+  const epkPath = profile?.slug ? `/epk/${profile.slug}` : null;
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
@@ -198,14 +198,20 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
             <h3 className="text-xl font-semibold tracking-normal">{t("epk_title")}</h3>
             <p className="mt-2 text-sm text-muted-foreground">{t("epk_description")}</p>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row">
+          {epkPath ? (
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button asChild variant="outline">
+                <a href={epkPath} target="_blank" rel="noreferrer">
+                  {t("epk_view")}
+                </a>
+              </Button>
+              <EPKShareButton url={epkPath} label={t("epk_copy")} successLabel={t("epk_share_success")} />
+            </div>
+          ) : (
             <Button asChild variant="outline">
-              <a href={epkPath} target="_blank" rel="noreferrer">
-                {t("epk_view")}
-              </a>
+              <Link href={localizedPath(locale, "/profile/edit?tab=epk")}>{t("epk_setup")}</Link>
             </Button>
-            <EPKShareButton url={epkPath} label={t("epk_copy")} successLabel={t("epk_share_success")} />
-          </div>
+          )}
         </CardContent>
       </Card>
 

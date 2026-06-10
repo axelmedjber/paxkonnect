@@ -3,11 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { getActionFeedback } from "@/lib/action-feedback";
+import type { ActionFeedbackResult } from "@/lib/action-state";
+import { getAdminAccess } from "@/lib/admin-access";
 import { sendOpportunityAlerts } from "@/lib/emails/sendOpportunityAlerts";
 import { sendStatusNotification } from "@/lib/emails/sendStatusNotification";
 import { localizedPath } from "@/lib/routes";
-import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
 import type { MatchingStatus, OpportunityCategory, PartnerType, PlaceType, ProfileRole } from "@/lib/types";
 
 type ActionResult<T = null> =
@@ -80,67 +81,54 @@ function actionError(scope: string, error: string): ActionResult {
   return { success: false, error };
 }
 
-function logActionError(scope: string, error: string) {
-  console.error(`[admin action] ${scope}: ${error}`);
-}
-
 function actionSuccess<T = null>(data: T): ActionResult<T> {
   return { success: true, data };
 }
 
 async function assertAdminAccess(locale: string) {
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const access = await getAdminAccess();
 
-  if (!serviceRoleKey || serviceRoleKey === "your_service_role_key") {
-    redirect(localizedPath(locale));
+  if (!access.ok) {
+    redirect(localizedPath(locale, access.reason === "not_signed_in" ? "/auth" : "/dashboard"));
   }
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect(localizedPath(locale, "/auth"));
-  }
-
-  return createAdminClient();
+  return access;
 }
 
 function revalidateAdmin(locale: string) {
   revalidatePath(localizedPath(locale, "/admin"));
 }
 
-export async function toggleProfileMember(formData: FormData) {
+export async function toggleProfileMember(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
-  const adminSupabase = await assertAdminAccess(locale);
+  const { adminSupabase } = await assertAdminAccess(locale);
+  const feedback = await getActionFeedback("admin action", locale);
   const id = getText(formData, "id");
   const isMember = getText(formData, "is_member") === "true";
 
   if (!id) {
-    logActionError("toggleProfileMember", "Missing profile id");
-    return;
+    return feedback.error("toggleProfileMember", "Missing profile id");
   }
 
   const { error } = await adminSupabase.from("profiles").update({ is_member: isMember }).eq("id", id);
 
   if (error) {
-    logActionError("toggleProfileMember", error.message);
-    return;
+    return feedback.error("toggleProfileMember", error.message);
   }
 
   revalidateAdmin(locale);
+  return feedback.saved();
 }
 
-export async function toggleProfileFeatured(formData: FormData) {
+export async function toggleProfileFeatured(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
-  const adminSupabase = await assertAdminAccess(locale);
+  const { adminSupabase } = await assertAdminAccess(locale);
+  const feedback = await getActionFeedback("admin action", locale);
   const id = getText(formData, "id");
   const isFeatured = getText(formData, "is_featured") === "true";
 
   if (!id) {
-    logActionError("toggleProfileFeatured", "Missing profile id");
-    return;
+    return feedback.error("toggleProfileFeatured", "Missing profile id");
   }
 
   if (isFeatured) {
@@ -150,14 +138,12 @@ export async function toggleProfileFeatured(formData: FormData) {
       .eq("is_featured", true);
 
     if (error) {
-      logActionError("toggleProfileFeatured", error.message);
-      return;
+      return feedback.error("toggleProfileFeatured", error.message);
     }
 
     if ((count ?? 0) >= 5) {
       revalidateAdmin(locale);
-      logActionError("toggleProfileFeatured", "Featured artist limit reached");
-      return;
+      return feedback.error("toggleProfileFeatured", "Featured artist limit reached");
     }
   }
 
@@ -172,18 +158,22 @@ export async function toggleProfileFeatured(formData: FormData) {
     .eq("id", id);
 
   if (error) {
-    logActionError("toggleProfileFeatured", error.message);
-    return;
+    return feedback.error("toggleProfileFeatured", error.message);
   }
 
   revalidateAdmin(locale);
+  return feedback.saved();
 }
 
 export async function updateProfileRole(id: string, role: ProfileRole, locale: string) {
-  const adminSupabase = await assertAdminAccess(locale);
+  const { adminSupabase, user } = await assertAdminAccess(locale);
 
   if (!id || !isProfileRole(role)) {
     return actionError("updateProfileRole", "Invalid profile role payload");
+  }
+
+  if (id === user.id) {
+    return actionError("updateProfileRole", "Admins cannot change their own role");
   }
 
   const { error } = await adminSupabase.from("profiles").update({ role }).eq("id", id);
@@ -196,14 +186,14 @@ export async function updateProfileRole(id: string, role: ProfileRole, locale: s
   return actionSuccess(null);
 }
 
-export async function createOpportunity(formData: FormData) {
+export async function createOpportunity(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
-  const adminSupabase = await assertAdminAccess(locale);
+  const { adminSupabase } = await assertAdminAccess(locale);
+  const feedback = await getActionFeedback("admin action", locale);
   const category = getText(formData, "category");
 
   if (!isOpportunityCategory(category)) {
-    logActionError("createOpportunity", "Invalid opportunity category");
-    return;
+    return feedback.error("createOpportunity", "Invalid opportunity category");
   }
 
   const { data: opportunity, error } = await adminSupabase.from("opportunities").insert({
@@ -219,25 +209,24 @@ export async function createOpportunity(formData: FormData) {
   }).select("*").single();
 
   if (error || !opportunity) {
-    revalidateAdmin(locale);
-    logActionError("createOpportunity", error?.message ?? "Opportunity was not created");
-    return;
+    return feedback.error("createOpportunity", error?.message ?? "Opportunity was not created");
   }
 
   await sendOpportunityAlerts(opportunity);
 
   revalidateAdmin(locale);
+  return feedback.created();
 }
 
-export async function updateOpportunity(formData: FormData) {
+export async function updateOpportunity(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
-  const adminSupabase = await assertAdminAccess(locale);
+  const { adminSupabase } = await assertAdminAccess(locale);
+  const feedback = await getActionFeedback("admin action", locale);
   const id = getText(formData, "id");
   const category = getText(formData, "category");
 
   if (!id || !isOpportunityCategory(category)) {
-    logActionError("updateOpportunity", "Invalid opportunity payload");
-    return;
+    return feedback.error("updateOpportunity", "Invalid opportunity payload");
   }
 
   const { error } = await adminSupabase
@@ -255,62 +244,62 @@ export async function updateOpportunity(formData: FormData) {
     .eq("id", id);
 
   if (error) {
-    logActionError("updateOpportunity", error.message);
-    return;
+    return feedback.error("updateOpportunity", error.message);
   }
 
   revalidateAdmin(locale);
+  return feedback.saved();
 }
 
-export async function deleteOpportunity(formData: FormData) {
+export async function deleteOpportunity(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
-  const adminSupabase = await assertAdminAccess(locale);
+  const { adminSupabase } = await assertAdminAccess(locale);
+  const feedback = await getActionFeedback("admin action", locale);
   const id = getText(formData, "id");
 
   if (!id) {
-    logActionError("deleteOpportunity", "Missing opportunity id");
-    return;
+    return feedback.error("deleteOpportunity", "Missing opportunity id");
   }
 
   const { error } = await adminSupabase.from("opportunities").delete().eq("id", id);
 
   if (error) {
-    logActionError("deleteOpportunity", error.message);
-    return;
+    return feedback.error("deleteOpportunity", error.message);
   }
 
   revalidateAdmin(locale);
+  return feedback.deleted();
 }
 
-export async function toggleOpportunityActive(formData: FormData) {
+export async function toggleOpportunityActive(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
-  const adminSupabase = await assertAdminAccess(locale);
+  const { adminSupabase } = await assertAdminAccess(locale);
+  const feedback = await getActionFeedback("admin action", locale);
   const id = getText(formData, "id");
   const isActive = getText(formData, "is_active") === "true";
 
   if (!id) {
-    logActionError("toggleOpportunityActive", "Missing opportunity id");
-    return;
+    return feedback.error("toggleOpportunityActive", "Missing opportunity id");
   }
 
   const { error } = await adminSupabase.from("opportunities").update({ is_active: isActive }).eq("id", id);
 
   if (error) {
-    logActionError("toggleOpportunityActive", error.message);
-    return;
+    return feedback.error("toggleOpportunityActive", error.message);
   }
 
   revalidateAdmin(locale);
+  return feedback.saved();
 }
 
-export async function createPartner(formData: FormData) {
+export async function createPartner(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
-  const adminSupabase = await assertAdminAccess(locale);
+  const { adminSupabase } = await assertAdminAccess(locale);
+  const feedback = await getActionFeedback("admin action", locale);
   const type = getText(formData, "type");
 
   if (!isPartnerType(type)) {
-    logActionError("createPartner", "Invalid partner type");
-    return;
+    return feedback.error("createPartner", "Invalid partner type");
   }
 
   const { error } = await adminSupabase.from("partners").insert({
@@ -324,44 +313,44 @@ export async function createPartner(formData: FormData) {
   });
 
   if (error) {
-    logActionError("createPartner", error.message);
-    return;
+    return feedback.error("createPartner", error.message);
   }
 
   revalidateAdmin(locale);
+  return feedback.created();
 }
 
-export async function togglePartnerActive(formData: FormData) {
+export async function togglePartnerActive(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
-  const adminSupabase = await assertAdminAccess(locale);
+  const { adminSupabase } = await assertAdminAccess(locale);
+  const feedback = await getActionFeedback("admin action", locale);
   const id = getText(formData, "id");
   const isActive = getText(formData, "is_active") === "true";
 
   if (!id) {
-    logActionError("togglePartnerActive", "Missing partner id");
-    return;
+    return feedback.error("togglePartnerActive", "Missing partner id");
   }
 
   const { error } = await adminSupabase.from("partners").update({ is_active: isActive }).eq("id", id);
 
   if (error) {
-    logActionError("togglePartnerActive", error.message);
-    return;
+    return feedback.error("togglePartnerActive", error.message);
   }
 
   revalidateAdmin(locale);
+  return feedback.saved();
 }
 
-export async function createPlace(formData: FormData) {
+export async function createPlace(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
-  const adminSupabase = await assertAdminAccess(locale);
+  const { adminSupabase } = await assertAdminAccess(locale);
+  const feedback = await getActionFeedback("admin action", locale);
   const type = getText(formData, "type");
   const latitude = getNumber(formData, "latitude");
   const longitude = getNumber(formData, "longitude");
 
   if (!isPlaceType(type) || latitude === null || longitude === null) {
-    logActionError("createPlace", "Invalid place payload");
-    return;
+    return feedback.error("createPlace", "Invalid place payload");
   }
 
   const { error } = await adminSupabase.from("places").insert({
@@ -377,36 +366,36 @@ export async function createPlace(formData: FormData) {
   });
 
   if (error) {
-    logActionError("createPlace", error.message);
-    return;
+    return feedback.error("createPlace", error.message);
   }
 
   revalidateAdmin(locale);
+  return feedback.created();
 }
 
-export async function togglePlaceActive(formData: FormData) {
+export async function togglePlaceActive(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
-  const adminSupabase = await assertAdminAccess(locale);
+  const { adminSupabase } = await assertAdminAccess(locale);
+  const feedback = await getActionFeedback("admin action", locale);
   const id = getText(formData, "id");
   const isActive = getText(formData, "is_active") === "true";
 
   if (!id) {
-    logActionError("togglePlaceActive", "Missing place id");
-    return;
+    return feedback.error("togglePlaceActive", "Missing place id");
   }
 
   const { error } = await adminSupabase.from("places").update({ is_active: isActive }).eq("id", id);
 
   if (error) {
-    logActionError("togglePlaceActive", error.message);
-    return;
+    return feedback.error("togglePlaceActive", error.message);
   }
 
   revalidateAdmin(locale);
+  return feedback.saved();
 }
 
 export async function updateMatchingStatus(id: string, status: MatchingStatus, locale: string) {
-  const adminSupabase = await assertAdminAccess(locale);
+  const { adminSupabase } = await assertAdminAccess(locale);
 
   if (!id || !isMatchingStatus(status)) {
     return actionError("updateMatchingStatus", "Invalid matching status payload");
