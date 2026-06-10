@@ -1,7 +1,9 @@
 "use client";
 
 import { LoaderCircleIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { updateMatchingStatus } from "@/app/actions/admin";
 import type { MatchingStatus } from "@/lib/types";
@@ -21,6 +23,7 @@ export function AdminMatchingStatusSelect({
   locale,
   status,
 }: AdminMatchingStatusSelectProps) {
+  const t = useTranslations("action_feedback");
   const [value, setValue] = useState(status);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -32,7 +35,11 @@ export function AdminMatchingStatusSelect({
 
     if (!result.success) {
       setValue(status);
+      toast.error(t("error", { message: result.error }));
+      return;
     }
+
+    toast.success(t("saved"));
   }
 
   return (

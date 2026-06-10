@@ -9,11 +9,13 @@ import {
   toggleOperatorOpportunityActive,
   updateOperatorOpportunity,
 } from "@/app/actions/operator";
+import { ActionFeedbackForm } from "@/components/ActionFeedbackForm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import type { ActionFeedbackResult } from "@/lib/action-state";
 import { localizedPath } from "@/lib/routes";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -35,7 +37,7 @@ type AcceptedApplication = Matching & {
 };
 
 type OperatorTranslations = Awaited<ReturnType<typeof getTranslations>>;
-type FormAction = (formData: FormData) => void | Promise<void>;
+type FormAction = (formData: FormData) => Promise<ActionFeedbackResult>;
 
 const categoryLabelKeys: Record<OpportunityCategory, string> = {
   contest: "category_contest",
@@ -265,7 +267,7 @@ function ReviewForm({
   ratingLabel: string;
 }>) {
   return (
-    <form action={createArtistReview} className="grid gap-4">
+    <ActionFeedbackForm action={createArtistReview} className="grid gap-4">
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="profile_id" value={application.profile_id} />
       <input type="hidden" name="opportunity_id" value={application.opportunity_id} />
@@ -284,7 +286,7 @@ function ReviewForm({
         <Textarea name="comment" maxLength={500} rows={4} />
       </Field>
       <Button type="submit" className="w-fit">{publishLabel}</Button>
-    </form>
+    </ActionFeedbackForm>
   );
 }
 
@@ -328,7 +330,7 @@ function OpportunityForm({
   t: OperatorTranslations;
 }>) {
   return (
-    <form action={action} className="grid gap-4 md:grid-cols-2">
+    <ActionFeedbackForm action={action} className="grid gap-4 md:grid-cols-2">
       <input type="hidden" name="locale" value={locale} />
       {opportunity ? <input type="hidden" name="id" value={opportunity.id} /> : null}
       <Field label={t("field_title")}>
@@ -371,7 +373,7 @@ function OpportunityForm({
       <div className="flex items-end">
         <Button type="submit">{submitLabel}</Button>
       </div>
-    </form>
+    </ActionFeedbackForm>
   );
 }
 
@@ -387,13 +389,13 @@ function ToggleActiveForm({
   locale: string;
 }>) {
   return (
-    <form action={toggleOperatorOpportunityActive}>
+    <ActionFeedbackForm action={toggleOperatorOpportunityActive}>
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="is_active" value={String(!isActive)} />
       <Button type="submit" size="sm" variant="outline">
         {label}
       </Button>
-    </form>
+    </ActionFeedbackForm>
   );
 }

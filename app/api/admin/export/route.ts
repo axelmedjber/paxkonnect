@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminAccess } from "@/lib/admin-access";
 import type { Matching, Opportunity, Profile } from "@/lib/types";
 
 type ExportType = "applications" | "opportunities" | "profiles";
@@ -27,34 +26,10 @@ function buildCsv(headers: string[], rows: Array<Array<string | number | boolean
   ].join("\n");
 }
 
-async function assertAdmin() {
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!serviceRoleKey || serviceRoleKey === "your_service_role_key") {
-    return false;
-  }
-
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return false;
-  }
-
-  const adminSupabase = createAdminClient();
-  const { data: profile } = await adminSupabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  return profile?.role === "admin";
-}
-
 export async function GET(request: NextRequest) {
-  if (!(await assertAdmin())) {
+  const access = await getAdminAccess();
+
+  if (!access.ok) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -64,7 +39,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Invalid export type" }, { status: 400 });
   }
 
-  const adminSupabase = createAdminClient();
+  const { adminSupabase } = access;
   let csv = "";
 
   if (type === "profiles") {

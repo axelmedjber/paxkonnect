@@ -34,7 +34,13 @@ function truncate(value: string | null, length: number) {
 
 async function getEPKData(slug: string): Promise<EPKData | null> {
   const supabase = createAdminClient();
-  const { data: profile } = await supabase.from("profiles").select("*").eq("slug", slug).maybeSingle();
+  // Same visibility rule as the public_profiles view: only artist profiles are public.
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("slug", slug)
+    .eq("role", "artist")
+    .maybeSingle();
 
   if (!profile) {
     return null;

@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { getActionFeedback } from "@/lib/action-feedback";
+import type { ActionFeedbackResult } from "@/lib/action-state";
 import { localizedPath } from "@/lib/routes";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -47,14 +49,15 @@ async function getSignedInUser(locale: string) {
   return user;
 }
 
-export async function startConversation(formData: FormData) {
+export async function startConversation(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
   const user = await getSignedInUser(locale);
+  const feedback = await getActionFeedback("messages action", locale);
   const opportunityId = getText(formData, "opportunity_id");
   const parsed = messageSchema.safeParse({ body: getText(formData, "body") });
 
   if (!opportunityId || !parsed.success) {
-    redirect(localizedPath(locale, "/opportunities"));
+    return feedback.error("startConversation", "Invalid message payload");
   }
 
   const adminSupabase = createAdminClient();
@@ -65,11 +68,11 @@ export async function startConversation(formData: FormData) {
     .maybeSingle();
 
   if (profileError) {
-    redirect(localizedPath(locale, "/messages"));
+    return feedback.error("startConversation", profileError.message);
   }
 
   if (profile?.role !== "artist") {
-    redirect(localizedPath(locale, "/messages"));
+    return feedback.error("startConversation", "Only artists can contact operators");
   }
 
   const { data: opportunity, error: opportunityError } = await adminSupabase
@@ -80,11 +83,11 @@ export async function startConversation(formData: FormData) {
     .maybeSingle();
 
   if (opportunityError) {
-    redirect(localizedPath(locale, `/opportunities/${opportunityId}`));
+    return feedback.error("startConversation", opportunityError.message);
   }
 
   if (!opportunity?.operator_id || opportunity.operator_id === user.id) {
-    redirect(localizedPath(locale, `/opportunities/${opportunityId}`));
+    return feedback.error("startConversation", "This opportunity cannot be contacted");
   }
 
   const now = new Date().toISOString();
@@ -103,7 +106,7 @@ export async function startConversation(formData: FormData) {
     .single();
 
   if (conversationError || !conversation) {
-    redirect(localizedPath(locale, `/opportunities/${opportunityId}`));
+    return feedback.error("startConversation", conversationError?.message ?? "Conversation was not created");
   }
 
   const { error: messageError } = await adminSupabase.from("messages").insert({
@@ -113,7 +116,7 @@ export async function startConversation(formData: FormData) {
   });
 
   if (messageError) {
-    redirect(localizedPath(locale, `/opportunities/${opportunityId}`));
+    return feedback.error("startConversation", messageError.message);
   }
 
   const { error: timestampError } = await adminSupabase

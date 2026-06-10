@@ -1,4 +1,10 @@
 {
+  "action_feedback": {
+    "error": "L'action a échoué : {message}",
+    "saved": "Modifications enregistrées.",
+    "created": "Élément créé.",
+    "deleted": "Élément supprimé."
+  },
   "common": {
     "not_specified": "Non précisé",
     "belgium": "Belgique",
@@ -150,6 +156,7 @@
     "epk_view": "Voir mon EPK",
     "epk_copy": "Copier le lien",
     "epk_share_success": "Lien copié !",
+    "epk_setup": "Créer mon EPK",
     "availability_title": "Mes disponibilités",
     "availability_description": "Indiquez aux programmateurs vos dates disponibles, incertaines ou indisponibles.",
     "availability_manage": "Gérer mes disponibilités",

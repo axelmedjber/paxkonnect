@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { clearArtistAvailability, setArtistAvailability } from "@/app/actions/availability";
+import { ActionFeedbackButton, ActionFeedbackForm } from "@/components/ActionFeedbackForm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -197,7 +198,7 @@ export default async function AvailabilityPage({ params, searchParams }: Availab
                           <summary className="cursor-pointer list-none rounded-md border border-purple-200 px-3 py-1.5 text-xs font-semibold text-purple-700 transition-colors hover:bg-purple-50 dark:border-purple-900 dark:text-purple-200 dark:hover:bg-purple-950">
                             {t("add_availability")}
                           </summary>
-                          <form action={setArtistAvailability} className="absolute right-0 z-10 mt-2 flex w-72 flex-col gap-2 rounded-xl border border-purple-100 bg-background p-3 shadow-lg dark:border-zinc-800">
+                          <ActionFeedbackForm action={setArtistAvailability} className="absolute right-0 z-10 mt-2 flex w-72 flex-col gap-2 rounded-xl border border-purple-100 bg-background p-3 shadow-lg dark:border-zinc-800">
                             <input type="hidden" name="locale" value={locale} />
                             <select name="date" className="h-9 rounded-md border border-input bg-background px-2 text-sm">
                               {emptyDays.map((entry) => (
@@ -217,7 +218,7 @@ export default async function AvailabilityPage({ params, searchParams }: Availab
                             <Button type="submit" size="sm">
                               {t("save_day")}
                             </Button>
-                          </form>
+                          </ActionFeedbackForm>
                         </details>
                       ) : null}
                     </div>
@@ -254,7 +255,7 @@ export default async function AvailabilityPage({ params, searchParams }: Availab
                                   </Badge>
                                 </span>
                               </summary>
-                              <form action={setArtistAvailability} className="mt-3 flex flex-col gap-2 border-t border-purple-100 pt-3 dark:border-zinc-800">
+                              <ActionFeedbackForm action={setArtistAvailability} className="mt-3 flex flex-col gap-2 border-t border-purple-100 pt-3 dark:border-zinc-800">
                                 <input type="hidden" name="locale" value={locale} />
                                 <input type="hidden" name="date" value={date} />
                                 <select name="status" defaultValue={item.status} className="h-9 rounded-md border border-input bg-background px-2 text-sm">
@@ -269,11 +270,11 @@ export default async function AvailabilityPage({ params, searchParams }: Availab
                                   <Button type="submit" size="sm">
                                     {t("save_day")}
                                   </Button>
-                                  <Button formAction={clearArtistAvailability} size="sm" variant="outline">
+                                  <ActionFeedbackButton action={clearArtistAvailability} size="sm" variant="outline">
                                     {t("clear_day")}
-                                  </Button>
+                                  </ActionFeedbackButton>
                                 </div>
-                              </form>
+                              </ActionFeedbackForm>
                             </details>
                           );
                         })}
@@ -314,7 +315,7 @@ export default async function AvailabilityPage({ params, searchParams }: Availab
                     ) : null}
                   </div>
                   {item?.note ? <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">{item.note}</p> : null}
-                  <form action={setArtistAvailability} className="mt-3 flex flex-col gap-2">
+                  <ActionFeedbackForm action={setArtistAvailability} className="mt-3 flex flex-col gap-2">
                     <input type="hidden" name="locale" value={locale} />
                     <input type="hidden" name="date" value={date} />
                     <select
@@ -340,12 +341,12 @@ export default async function AvailabilityPage({ params, searchParams }: Availab
                         {t("save_day")}
                       </Button>
                       {item ? (
-                        <Button formAction={clearArtistAvailability} size="sm" variant="outline" className="h-8 text-xs">
+                        <ActionFeedbackButton action={clearArtistAvailability} size="sm" variant="outline" className="h-8 text-xs">
                           {t("clear_day")}
-                        </Button>
+                        </ActionFeedbackButton>
                       ) : null}
                     </div>
-                  </form>
+                  </ActionFeedbackForm>
                 </div>
               );
             })}

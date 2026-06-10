@@ -15,6 +15,7 @@ import {
   togglePlaceActive,
   updateOpportunity,
 } from "@/app/actions/admin";
+import { ActionFeedbackForm } from "@/components/ActionFeedbackForm";
 import { AdminDeleteButton } from "@/components/AdminDeleteButton";
 import { AdminMatchingStatusSelect } from "@/components/AdminMatchingStatusSelect";
 import { AdminUserRoleSelect } from "@/components/AdminUserRoleSelect";
@@ -24,9 +25,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import type { ActionFeedbackResult } from "@/lib/action-state";
+import { getAdminAccess } from "@/lib/admin-access";
 import { localizedPath } from "@/lib/routes";
-import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
 import type {
   Matching,
   MatchingStatus,
@@ -63,7 +64,7 @@ const placeTypes: PlaceType[] = [
   "other",
 ];
 type AdminTranslations = Awaited<ReturnType<typeof getTranslations>>;
-type FormAction = (formData: FormData) => void | Promise<void>;
+type FormAction = (formData: FormData) => Promise<ActionFeedbackResult>;
 const opportunityCategoryLabelKeys: Record<OpportunityCategory, string> = {
   radio: "category_radio",
   podcast: "category_podcast",
@@ -120,22 +121,13 @@ export default async function AdminPage({ params, searchParams }: AdminPageProps
   const activeUserFilter = isUserFilter(filters.users) ? filters.users : "all";
   const t = await getTranslations("admin");
   const common = await getTranslations("common");
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const access = await getAdminAccess();
 
-  if (!serviceRoleKey || serviceRoleKey === "your_service_role_key") {
-    redirect(localizedPath(locale));
+  if (!access.ok) {
+    redirect(localizedPath(locale, access.reason === "not_signed_in" ? "/auth" : "/dashboard"));
   }
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect(localizedPath(locale, "/auth"));
-  }
-
-  const adminSupabase = createAdminClient();
+  const { adminSupabase } = access;
   const monthStart = new Date();
   monthStart.setDate(1);
   monthStart.setHours(0, 0, 0, 0);
@@ -845,14 +837,14 @@ function ToggleMemberForm({
   locale: string;
 }>) {
   return (
-    <form action={toggleProfileMember}>
+    <ActionFeedbackForm action={toggleProfileMember}>
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="is_member" value={String(!isMember)} />
       <Button type="submit" size="sm" variant="outline">
         {label}
       </Button>
-    </form>
+    </ActionFeedbackForm>
   );
 }
 
@@ -870,14 +862,14 @@ function ToggleFeaturedForm({
   locale: string;
 }>) {
   return (
-    <form action={toggleProfileFeatured}>
+    <ActionFeedbackForm action={toggleProfileFeatured}>
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="is_featured" value={String(!isFeatured)} />
       <Button type="submit" size="sm" variant="outline" disabled={disabled}>
         {label}
       </Button>
-    </form>
+    </ActionFeedbackForm>
   );
 }
 
@@ -912,7 +904,7 @@ function OpportunityForm({
   t: AdminTranslations;
 }>) {
   return (
-    <form action={action} className="grid gap-4 md:grid-cols-2">
+    <ActionFeedbackForm action={action} className="grid gap-4 md:grid-cols-2">
       <input type="hidden" name="locale" value={locale} />
       {opportunity ? <input type="hidden" name="id" value={opportunity.id} /> : null}
       <Field label={t("field_title")}>
@@ -955,7 +947,7 @@ function OpportunityForm({
       <div className="flex items-end">
         <Button type="submit">{submitLabel}</Button>
       </div>
-    </form>
+    </ActionFeedbackForm>
   );
 }
 
@@ -971,7 +963,7 @@ function PartnerForm({
   t: AdminTranslations;
 }>) {
   return (
-    <form action={action} className="grid gap-4 md:grid-cols-2">
+    <ActionFeedbackForm action={action} className="grid gap-4 md:grid-cols-2">
       <input type="hidden" name="locale" value={locale} />
       <Field label={t("field_name")}>
         <Input name="name" required />
@@ -1002,7 +994,7 @@ function PartnerForm({
       <div className="md:col-span-2">
         <Button type="submit">{submitLabel}</Button>
       </div>
-    </form>
+    </ActionFeedbackForm>
   );
 }
 
@@ -1018,7 +1010,7 @@ function PlaceForm({
   t: AdminTranslations;
 }>) {
   return (
-    <form action={action} className="grid gap-4 md:grid-cols-2">
+    <ActionFeedbackForm action={action} className="grid gap-4 md:grid-cols-2">
       <input type="hidden" name="locale" value={locale} />
       <Field label={t("field_name")}>
         <Input name="name" required />
@@ -1055,7 +1047,7 @@ function PlaceForm({
       <div className="md:col-span-2">
         <Button type="submit">{submitLabel}</Button>
       </div>
-    </form>
+    </ActionFeedbackForm>
   );
 }
 
@@ -1073,13 +1065,13 @@ function ToggleForm({
   locale: string;
 }>) {
   return (
-    <form action={action}>
+    <ActionFeedbackForm action={action}>
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="is_active" value={String(!isActive)} />
       <Button type="submit" size="sm" variant="outline">
         {label}
       </Button>
-    </form>
+    </ActionFeedbackForm>
   );
 }

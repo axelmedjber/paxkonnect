@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { getActionFeedback } from "@/lib/action-feedback";
+import type { ActionFeedbackResult } from "@/lib/action-state";
 import { localizedPath } from "@/lib/routes";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -24,10 +26,6 @@ function getText(formData: FormData, key: string) {
 
 function getLocale(formData: FormData) {
   return getText(formData, "locale") || "fr";
-}
-
-function logActionError(scope: string, error: string) {
-  console.error(`[availability action] ${scope}: ${error}`);
 }
 
 async function assertArtist(locale: string) {
@@ -60,9 +58,10 @@ async function assertArtist(locale: string) {
   };
 }
 
-export async function setArtistAvailability(formData: FormData) {
+export async function setArtistAvailability(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
   const { adminSupabase, user } = await assertArtist(locale);
+  const feedback = await getActionFeedback("availability action", locale);
   const parsed = availabilitySchema.safeParse({
     date: getText(formData, "date"),
     note: getText(formData, "note"),
@@ -70,8 +69,7 @@ export async function setArtistAvailability(formData: FormData) {
   });
 
   if (!parsed.success) {
-    logActionError("setArtistAvailability", "Invalid availability payload");
-    return;
+    return feedback.error("setArtistAvailability", "Invalid availability payload");
   }
 
   const { error } = await adminSupabase.from("artist_availability").upsert(
@@ -85,22 +83,22 @@ export async function setArtistAvailability(formData: FormData) {
   );
 
   if (error) {
-    logActionError("setArtistAvailability", error.message);
-    return;
+    return feedback.error("setArtistAvailability", error.message);
   }
 
   revalidatePath(localizedPath(locale, "/availability"));
   revalidatePath(localizedPath(locale, `/artists/${user.id}`));
+  return feedback.saved();
 }
 
-export async function clearArtistAvailability(formData: FormData) {
+export async function clearArtistAvailability(formData: FormData): Promise<ActionFeedbackResult> {
   const locale = getLocale(formData);
   const { adminSupabase, user } = await assertArtist(locale);
+  const feedback = await getActionFeedback("availability action", locale);
   const date = getText(formData, "date");
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    logActionError("clearArtistAvailability", "Invalid availability date");
-    return;
+    return feedback.error("clearArtistAvailability", "Invalid availability date");
   }
 
   const { error } = await adminSupabase
@@ -110,10 +108,10 @@ export async function clearArtistAvailability(formData: FormData) {
     .eq("date", date);
 
   if (error) {
-    logActionError("clearArtistAvailability", error.message);
-    return;
+    return feedback.error("clearArtistAvailability", error.message);
   }
 
   revalidatePath(localizedPath(locale, "/availability"));
   revalidatePath(localizedPath(locale, `/artists/${user.id}`));
+  return feedback.deleted();
 }
