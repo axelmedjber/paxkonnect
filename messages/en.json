@@ -5,6 +5,33 @@
     "created": "Item created.",
     "deleted": "Item deleted."
   },
+  "privacy": {
+    "title": "Privacy policy",
+    "updated": "Last updated: 11 June 2026",
+    "intro": "PaxKonnect is a cultural platform run by MonsPax ASBL. This page explains which personal data we process, why, and what your rights are under the General Data Protection Regulation (GDPR).",
+    "controller_title": "Data controller",
+    "controller_body": "MonsPax ASBL, Mons (Belgium), is the controller of your data. For any question about your data: contact@monspax.be.",
+    "data_title": "Data we collect",
+    "data_body": "We process the data you provide to us: email address (account), artist profile (name, stage name, city, biography, disciplines, photo, social links, indicative fees), portfolio and press kit (photos, tech rider, stage experience), applications to opportunities, messages exchanged with operators, availability, public statistics imported from Spotify if you connect your account, and push notification subscriptions if you enable them.",
+    "purposes_title": "Purposes",
+    "purposes_body": "Your data is used solely to run the platform: displaying your profile and EPK, connecting you with cultural operators, managing your applications, sending you transactional emails (sign-in link, opportunity alerts, application updates) and the notifications you opted into. We never sell your data and never use it for advertising.",
+    "legal_basis_title": "Legal bases",
+    "legal_basis_body": "Performance of the service for the data needed for your account and applications; your consent for push notifications, email alerts and the Spotify connection (revocable at any time); legitimate interest for platform security.",
+    "public_visibility_title": "Public visibility",
+    "public_visibility_body": "PaxKonnect is a showcase: your artist profile, your EPK and the information you publish there (including the booking contact email if you fill it in) are publicly visible, without an account. Only publish what you want to make public. Messages and applications remain private.",
+    "recipients_title": "Recipients and processors",
+    "recipients_body": "Your data is hosted and processed by our technical processors: Supabase (database and authentication), Vercel (hosting), Resend (email delivery), Spotify (if you connect your account) and Mapbox (cultural places map). No data is shared with third parties for commercial purposes.",
+    "retention_title": "Retention",
+    "retention_body": "Your data is kept as long as your account is active. Deleting your account permanently erases your profile, portfolio, EPK, applications, messages, availability and files.",
+    "rights_title": "Your rights",
+    "rights_body": "You have the rights of access, rectification, erasure, portability, restriction and objection. You can exercise most of these rights directly from your profile, or write to us at contact@monspax.be. You can also lodge a complaint with the Belgian Data Protection Authority (dataprotectionauthority.be).",
+    "deletion_title": "Account deletion",
+    "deletion_body": "You can delete your account at any time from your profile edit page. This action is immediate and irreversible: it deletes your account and all associated data.",
+    "contact_title": "Contact",
+    "contact_body": "MonsPax ASBL — contact@monspax.be",
+    "deletion_hint": "Want to delete your account? Go to",
+    "deletion_hint_link": "your profile settings"
+  },
   "common": {
     "not_specified": "Not specified",
     "belgium": "Belgium",
@@ -39,6 +66,7 @@
     "sign_in": "Sign in"
   },
   "footer": {
+    "privacy": "Privacy",
     "description": "A digital cultural platform for independent Belgian artists, created by MonsPax ASBL.",
     "join": "Join",
     "monspax": "MonsPax ASBL"
@@ -93,6 +121,8 @@
     "hero_cta_partner": "Partner Area"
   },
   "auth": {
+    "privacy_notice": "By continuing, you accept our",
+    "privacy_notice_link": "privacy policy",
     "title": "Sign in to PaxKonnect",
     "description": "Enter your email to receive a secure magic link.",
     "email_label": "Email",
@@ -170,6 +200,10 @@
     "notifications_unavailable": "Notifications are not configured."
   },
   "profile_edit": {
+    "danger_title": "Danger zone",
+    "danger_description": "Deleting your account is immediate and irreversible: your profile, portfolio, EPK, applications, messages, availability and files will be permanently erased.",
+    "danger_confirm": "Permanently delete your account and all your data? This action is irreversible.",
+    "danger_delete": "Delete my account",
     "title": "Edit profile",
     "description": "Manage your public artist profile, social links, avatar, and portfolio.",
     "welcome_banner": "Welcome to PaxKonnect! Start by completing your artist profile.",

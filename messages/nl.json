@@ -5,6 +5,33 @@
     "created": "Item aangemaakt.",
     "deleted": "Item verwijderd."
   },
+  "privacy": {
+    "title": "Privacybeleid",
+    "updated": "Laatst bijgewerkt: 11 juni 2026",
+    "intro": "PaxKonnect is een cultureel platform beheerd door MonsPax ASBL. Deze pagina legt uit welke persoonsgegevens we verwerken, waarom, en wat je rechten zijn volgens de Algemene Verordening Gegevensbescherming (AVG).",
+    "controller_title": "Verwerkingsverantwoordelijke",
+    "controller_body": "MonsPax ASBL, Bergen (België), is verantwoordelijk voor de verwerking van je gegevens. Voor vragen over je gegevens: contact@monspax.be.",
+    "data_title": "Verzamelde gegevens",
+    "data_body": "We verwerken de gegevens die je ons verstrekt: e-mailadres (account), artiestenprofiel (naam, artiestennaam, stad, biografie, disciplines, foto, sociale links, indicatieve tarieven), portfolio en perskit (foto's, technische fiche, podiumervaring), sollicitaties op opportuniteiten, berichten met operatoren, beschikbaarheid, publieke statistieken geïmporteerd uit Spotify als je je account koppelt, en pushmelding-abonnementen als je die inschakelt.",
+    "purposes_title": "Doeleinden",
+    "purposes_body": "Je gegevens dienen uitsluitend om het platform te laten werken: je profiel en EPK tonen, je in contact brengen met culturele operatoren, je sollicitaties beheren, je transactionele e-mails sturen (inloglink, opportuniteitsmeldingen, sollicitatiestatus) en de meldingen die je hebt geaccepteerd. We verkopen je gegevens nooit en gebruiken ze niet voor reclame.",
+    "legal_basis_title": "Rechtsgronden",
+    "legal_basis_body": "De uitvoering van de dienst voor de gegevens die nodig zijn voor je account en sollicitaties; je toestemming voor pushmeldingen, e-mailalerts en de Spotify-koppeling (op elk moment intrekbaar); gerechtvaardigd belang voor de beveiliging van het platform.",
+    "public_visibility_title": "Publieke zichtbaarheid",
+    "public_visibility_body": "PaxKonnect is een etalage: je artiestenprofiel, je EPK en de informatie die je er publiceert (inclusief het boekings-e-mailadres als je dat invult) zijn publiek zichtbaar, zonder account. Publiceer alleen wat je openbaar wil maken. Berichten en sollicitaties blijven privé.",
+    "recipients_title": "Ontvangers en verwerkers",
+    "recipients_body": "Je gegevens worden gehost en verwerkt door onze technische verwerkers: Supabase (database en authenticatie), Vercel (hosting), Resend (e-mailverzending), Spotify (als je je account koppelt) en Mapbox (kaart van culturele plekken). Er worden geen gegevens met derden gedeeld voor commerciële doeleinden.",
+    "retention_title": "Bewaartermijn",
+    "retention_body": "Je gegevens worden bewaard zolang je account actief is. Het verwijderen van je account wist definitief je profiel, portfolio, EPK, sollicitaties, berichten, beschikbaarheid en bestanden.",
+    "rights_title": "Je rechten",
+    "rights_body": "Je hebt recht op inzage, rectificatie, verwijdering, overdraagbaarheid, beperking en bezwaar. De meeste van deze rechten kun je rechtstreeks via je profiel uitoefenen, of schrijf ons op contact@monspax.be. Je kunt ook een klacht indienen bij de Belgische Gegevensbeschermingsautoriteit (gegevensbeschermingsautoriteit.be).",
+    "deletion_title": "Account verwijderen",
+    "deletion_body": "Je kunt je account op elk moment verwijderen via de profielbewerkingspagina. Deze actie is onmiddellijk en onomkeerbaar: ze verwijdert je account en alle bijbehorende gegevens.",
+    "contact_title": "Contact",
+    "contact_body": "MonsPax ASBL — contact@monspax.be",
+    "deletion_hint": "Wil je je account verwijderen? Ga naar",
+    "deletion_hint_link": "je profielinstellingen"
+  },
   "common": {
     "not_specified": "Niet opgegeven",
     "belgium": "België",
@@ -39,6 +66,7 @@
     "sign_in": "Inloggen"
   },
   "footer": {
+    "privacy": "Privacy",
     "description": "Een digitaal cultureel platform voor onafhankelijke Belgische kunstenaars, opgericht door MonsPax ASBL.",
     "join": "Word lid",
     "monspax": "MonsPax ASBL"
@@ -93,6 +121,8 @@
     "hero_cta_partner": "Partneromgeving"
   },
   "auth": {
+    "privacy_notice": "Door verder te gaan, accepteer je ons",
+    "privacy_notice_link": "privacybeleid",
     "title": "Aanmelden bij PaxKonnect",
     "description": "Vul je e-mail in om een veilige magische link te ontvangen.",
     "email_label": "E-mail",
@@ -170,6 +200,10 @@
     "notifications_unavailable": "Notificaties zijn niet geconfigureerd."
   },
   "profile_edit": {
+    "danger_title": "Gevarenzone",
+    "danger_description": "Het verwijderen van je account is onmiddellijk en onomkeerbaar: profiel, portfolio, EPK, sollicitaties, berichten, beschikbaarheid en bestanden worden definitief gewist.",
+    "danger_confirm": "Je account en al je gegevens definitief verwijderen? Deze actie is onomkeerbaar.",
+    "danger_delete": "Mijn account verwijderen",
     "title": "Profiel bewerken",
     "description": "Beheer je openbare kunstenaarsprofiel, sociale links, avatar en portfolio.",
     "welcome_banner": "Welkom bij PaxKonnect! Begin met het vervolledigen van je kunstenaarsprofiel.",

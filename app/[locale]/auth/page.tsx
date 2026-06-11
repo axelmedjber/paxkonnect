@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
@@ -36,6 +37,13 @@ export default async function AuthPage({ params, searchParams }: AuthPageProps) 
           <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">{t("description")}</p>
         </div>
         <AuthMagicLinkForm initialRole={getSelectedRole(role)} />
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          {t("privacy_notice")}{" "}
+          <Link href={localizedPath(locale, "/privacy")} className="font-medium text-primary hover:underline">
+            {t("privacy_notice_link")}
+          </Link>
+          .
+        </p>
       </div>
     </main>
   );

@@ -5,6 +5,33 @@
     "created": "Eintrag erstellt.",
     "deleted": "Eintrag gelöscht."
   },
+  "privacy": {
+    "title": "Datenschutzerklärung",
+    "updated": "Zuletzt aktualisiert: 11. Juni 2026",
+    "intro": "PaxKonnect ist eine Kulturplattform der MonsPax ASBL. Diese Seite erklärt, welche personenbezogenen Daten wir verarbeiten, warum, und welche Rechte Sie gemäß der Datenschutz-Grundverordnung (DSGVO) haben.",
+    "controller_title": "Verantwortlicher",
+    "controller_body": "MonsPax ASBL, Mons (Belgien), ist für die Verarbeitung Ihrer Daten verantwortlich. Bei Fragen zu Ihren Daten: contact@monspax.be.",
+    "data_title": "Erhobene Daten",
+    "data_body": "Wir verarbeiten die Daten, die Sie uns bereitstellen: E-Mail-Adresse (Konto), Künstlerprofil (Name, Künstlername, Stadt, Biografie, Disziplinen, Foto, Social-Media-Links, Richtgagen), Portfolio und Pressekit (Fotos, technische Anforderungen, Bühnenerfahrung), Bewerbungen auf Gelegenheiten, Nachrichten mit Veranstaltern, Verfügbarkeiten, öffentliche Statistiken aus Spotify, falls Sie Ihr Konto verbinden, sowie Push-Benachrichtigungs-Abonnements, falls Sie diese aktivieren.",
+    "purposes_title": "Zwecke",
+    "purposes_body": "Ihre Daten dienen ausschließlich dem Betrieb der Plattform: Anzeige Ihres Profils und EPK, Vermittlung an Kulturveranstalter, Verwaltung Ihrer Bewerbungen, Versand von Transaktions-E-Mails (Anmeldelink, Gelegenheits-Benachrichtigungen, Bewerbungsstatus) und der von Ihnen akzeptierten Benachrichtigungen. Wir verkaufen Ihre Daten niemals und nutzen sie nicht für Werbung.",
+    "legal_basis_title": "Rechtsgrundlagen",
+    "legal_basis_body": "Vertragserfüllung für die Daten, die für Ihr Konto und Ihre Bewerbungen erforderlich sind; Ihre Einwilligung für Push-Benachrichtigungen, E-Mail-Alerts und die Spotify-Verbindung (jederzeit widerrufbar); berechtigtes Interesse für die Sicherheit der Plattform.",
+    "public_visibility_title": "Öffentliche Sichtbarkeit",
+    "public_visibility_body": "PaxKonnect ist ein Schaufenster: Ihr Künstlerprofil, Ihr EPK und die dort veröffentlichten Informationen (einschließlich der Booking-Kontakt-E-Mail, falls angegeben) sind öffentlich sichtbar, ohne Konto. Veröffentlichen Sie nur, was Sie öffentlich machen möchten. Nachrichten und Bewerbungen bleiben privat.",
+    "recipients_title": "Empfänger und Auftragsverarbeiter",
+    "recipients_body": "Ihre Daten werden von unseren technischen Auftragsverarbeitern gehostet und verarbeitet: Supabase (Datenbank und Authentifizierung), Vercel (Hosting), Resend (E-Mail-Versand), Spotify (falls Sie Ihr Konto verbinden) und Mapbox (Karte der Kulturorte). Es werden keine Daten zu kommerziellen Zwecken an Dritte weitergegeben.",
+    "retention_title": "Speicherdauer",
+    "retention_body": "Ihre Daten werden gespeichert, solange Ihr Konto aktiv ist. Die Löschung Ihres Kontos entfernt Ihr Profil, Portfolio, EPK, Bewerbungen, Nachrichten, Verfügbarkeiten und Dateien endgültig.",
+    "rights_title": "Ihre Rechte",
+    "rights_body": "Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Datenübertragbarkeit, Einschränkung und Widerspruch. Die meisten dieser Rechte können Sie direkt über Ihr Profil ausüben oder uns an contact@monspax.be schreiben. Sie können auch eine Beschwerde bei der belgischen Datenschutzbehörde einreichen (dataprotectionauthority.be).",
+    "deletion_title": "Kontolöschung",
+    "deletion_body": "Sie können Ihr Konto jederzeit über die Profilbearbeitungsseite löschen. Diese Aktion ist sofortig und unwiderruflich: Sie löscht Ihr Konto und alle zugehörigen Daten.",
+    "contact_title": "Kontakt",
+    "contact_body": "MonsPax ASBL — contact@monspax.be",
+    "deletion_hint": "Sie möchten Ihr Konto löschen? Gehen Sie zu",
+    "deletion_hint_link": "Ihren Profileinstellungen"
+  },
   "common": {
     "not_specified": "Nicht angegeben",
     "belgium": "Belgien",
@@ -39,6 +66,7 @@
     "sign_in": "Anmelden"
   },
   "footer": {
+    "privacy": "Datenschutz",
     "description": "Eine digitale Kulturplattform für unabhängige belgische Künstler, gegründet von MonsPax ASBL.",
     "join": "Beitreten",
     "monspax": "MonsPax ASBL"
@@ -93,6 +121,8 @@
     "hero_cta_partner": "Partnerbereich"
   },
   "auth": {
+    "privacy_notice": "Indem Sie fortfahren, akzeptieren Sie unsere",
+    "privacy_notice_link": "Datenschutzerklärung",
     "title": "Bei PaxKonnect anmelden",
     "description": "Gib deine E-Mail ein, um einen sicheren Magic Link zu erhalten.",
     "email_label": "E-Mail",
@@ -170,6 +200,10 @@
     "notifications_unavailable": "Benachrichtigungen sind nicht konfiguriert."
   },
   "profile_edit": {
+    "danger_title": "Gefahrenzone",
+    "danger_description": "Die Löschung Ihres Kontos ist sofortig und unwiderruflich: Profil, Portfolio, EPK, Bewerbungen, Nachrichten, Verfügbarkeiten und Dateien werden endgültig gelöscht.",
+    "danger_confirm": "Ihr Konto und alle Ihre Daten endgültig löschen? Diese Aktion ist unwiderruflich.",
+    "danger_delete": "Mein Konto löschen",
     "title": "Profil bearbeiten",
     "description": "Verwalte dein öffentliches Künstlerprofil, Social Links, Avatar und Portfolio.",
     "welcome_banner": "Willkommen bei PaxKonnect! Beginne damit, dein Künstlerprofil zu vervollständigen.",

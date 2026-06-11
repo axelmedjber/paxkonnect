@@ -53,6 +53,7 @@ paxkonnect/
 │   │   ├── availability/page.tsx   # Availability calendar (protected)
 │   │   ├── operator/dashboard/     # Operator dashboard (role: operator)
 │   │   ├── admin/page.tsx          # Admin panel (role: admin)
+│   │   ├── privacy/page.tsx        # Privacy policy (GDPR)
 │   │   └── unsubscribe/page.tsx    # Email unsubscribe
 │   ├── auth/callback/route.ts      # Supabase auth callback (non-localized)
 │   ├── epk/[slug]/page.tsx         # Public EPK page (non-localized)
@@ -193,7 +194,12 @@ npx tsc --noEmit
 
 # Lint
 npm run lint
+
+# Check translation key parity across the four locales
+npm run check:i18n
 ```
+
+All four checks also run in CI (`.github/workflows/ci.yml`) on every push and pull request.
 
 \---
 

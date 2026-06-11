@@ -33,6 +33,9 @@ export function Footer({ locale }: Readonly<{ locale: string }>) {
           <a href="mailto:contact@monspax.be" className="hover:text-foreground">
             {t("monspax")}
           </a>
+          <Link href={localizedPath(locale, "/privacy")} className="hover:text-foreground">
+            {t("privacy")}
+          </Link>
         </nav>
       </div>
     </footer>

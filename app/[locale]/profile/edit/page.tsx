@@ -1,8 +1,12 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
+import { deleteOwnAccount } from "@/app/actions/account";
+import { ActionFeedbackForm } from "@/components/ActionFeedbackForm";
 import { ProfileEditTabs, type ProfileEditTab } from "@/components/ProfileEditTabs";
 import { ProfileWelcomeBanner } from "@/components/ProfileWelcomeBanner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { localizedPath } from "@/lib/routes";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -95,6 +99,20 @@ export default async function EditProfilePage({ params, searchParams }: EditProf
         techRider={techRider ?? null}
         userId={user.id}
       />
+      <Card className="border-destructive/30">
+        <CardHeader>
+          <CardTitle className="text-destructive">{t("danger_title")}</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <p className="text-sm leading-6 text-muted-foreground">{t("danger_description")}</p>
+          <ActionFeedbackForm action={deleteOwnAccount} confirmMessage={t("danger_confirm")}>
+            <input type="hidden" name="locale" value={locale} />
+            <Button type="submit" variant="destructive">
+              {t("danger_delete")}
+            </Button>
+          </ActionFeedbackForm>
+        </CardContent>
+      </Card>
     </main>
   );
 }
