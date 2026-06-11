@@ -94,9 +94,14 @@ export async function Navbar({ locale }: Readonly<{ locale: string }>) {
               <SignOutButton />
             </div>
           ) : (
-            <Button asChild size="sm" className="hidden sm:inline-flex">
-              <Link href={localizedPath(locale, "/auth")}>{t("join")}</Link>
-            </Button>
+            <div className="hidden items-center gap-2 sm:flex">
+              <Button asChild size="sm" variant="outline">
+                <Link href={localizedPath(locale, "/auth")}>{t("sign_in")}</Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link href={localizedPath(locale, "/auth")}>{t("join")}</Link>
+              </Button>
+            </div>
           )}
           <details className="group relative md:hidden">
             <summary
@@ -137,9 +142,14 @@ export async function Navbar({ locale }: Readonly<{ locale: string }>) {
                     <SignOutButton />
                   </div>
                 ) : (
-                  <Button asChild size="sm" className="w-full">
-                    <Link href={localizedPath(locale, "/auth")}>{t("join")}</Link>
-                  </Button>
+                  <div className="flex flex-col gap-2">
+                    <Button asChild size="sm" className="w-full">
+                      <Link href={localizedPath(locale, "/auth")}>{t("join")}</Link>
+                    </Button>
+                    <Button asChild size="sm" variant="outline" className="w-full">
+                      <Link href={localizedPath(locale, "/auth")}>{t("sign_in")}</Link>
+                    </Button>
+                  </div>
                 )}
                 <div className="mt-3 flex items-center justify-between">
                   <span className="text-sm font-medium text-muted-foreground">{t("theme_toggle")}</span>
