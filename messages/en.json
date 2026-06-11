@@ -5,6 +5,20 @@
     "created": "Item created.",
     "deleted": "Item deleted."
   },
+  "places": {
+    "title": "Cultural venues",
+    "description": "Belgian venues, cultural centres, radios, festivals and studios where your artistic projects can come alive.",
+    "load_error": "Could not load venues: {message}",
+    "search_label": "Search for a venue",
+    "search_placeholder": "Search by name, city or description…",
+    "city_filter": "Filter by city",
+    "all_cities": "All cities",
+    "all_types": "All types",
+    "results_count": "{count, plural, =0 {No venues found} one {# venue found} other {# venues found}}",
+    "location_missing": "Address not specified",
+    "visit": "Website",
+    "empty": "No venues match your search."
+  },
   "privacy": {
     "title": "Privacy policy",
     "updated": "Last updated: 11 June 2026",

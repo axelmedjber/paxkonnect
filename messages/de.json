@@ -5,6 +5,20 @@
     "created": "Eintrag erstellt.",
     "deleted": "Eintrag gelöscht."
   },
+  "places": {
+    "title": "Kulturorte",
+    "description": "Belgische Säle, Kulturzentren, Radios, Festivals und Studios, in denen Ihre künstlerischen Projekte leben können.",
+    "load_error": "Orte konnten nicht geladen werden: {message}",
+    "search_label": "Ort suchen",
+    "search_placeholder": "Nach Name, Stadt oder Beschreibung suchen…",
+    "city_filter": "Nach Stadt filtern",
+    "all_cities": "Alle Städte",
+    "all_types": "Alle Typen",
+    "results_count": "{count, plural, =0 {Keine Orte gefunden} one {# Ort gefunden} other {# Orte gefunden}}",
+    "location_missing": "Adresse nicht angegeben",
+    "visit": "Website",
+    "empty": "Keine Orte entsprechen Ihrer Suche."
+  },
   "privacy": {
     "title": "Datenschutzerklärung",
     "updated": "Zuletzt aktualisiert: 11. Juni 2026",

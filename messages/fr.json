@@ -5,6 +5,20 @@
     "created": "Élément créé.",
     "deleted": "Élément supprimé."
   },
+  "places": {
+    "title": "Lieux culturels",
+    "description": "Salles, centres culturels, radios, festivals et studios belges où faire vivre vos projets artistiques.",
+    "load_error": "Impossible de charger les lieux : {message}",
+    "search_label": "Rechercher un lieu",
+    "search_placeholder": "Rechercher par nom, ville ou description…",
+    "city_filter": "Filtrer par ville",
+    "all_cities": "Toutes les villes",
+    "all_types": "Tous les types",
+    "results_count": "{count, plural, =0 {Aucun lieu trouvé} one {# lieu trouvé} other {# lieux trouvés}}",
+    "location_missing": "Adresse non précisée",
+    "visit": "Site web",
+    "empty": "Aucun lieu ne correspond à votre recherche."
+  },
   "privacy": {
     "title": "Politique de confidentialité",
     "updated": "Dernière mise à jour : 11 juin 2026",

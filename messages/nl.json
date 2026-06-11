@@ -5,6 +5,20 @@
     "created": "Item aangemaakt.",
     "deleted": "Item verwijderd."
   },
+  "places": {
+    "title": "Culturele plekken",
+    "description": "Belgische zalen, culturele centra, radio's, festivals en studio's waar je artistieke projecten tot leven komen.",
+    "load_error": "Kon de plekken niet laden: {message}",
+    "search_label": "Zoek een plek",
+    "search_placeholder": "Zoek op naam, stad of beschrijving…",
+    "city_filter": "Filter op stad",
+    "all_cities": "Alle steden",
+    "all_types": "Alle types",
+    "results_count": "{count, plural, =0 {Geen plekken gevonden} one {# plek gevonden} other {# plekken gevonden}}",
+    "location_missing": "Adres niet opgegeven",
+    "visit": "Website",
+    "empty": "Geen plekken komen overeen met je zoekopdracht."
+  },
   "privacy": {
     "title": "Privacybeleid",
     "updated": "Laatst bijgewerkt: 11 juni 2026",
