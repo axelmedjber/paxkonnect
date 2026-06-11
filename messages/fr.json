@@ -35,7 +35,8 @@
     "edit_profile": "Modifier mon profil",
     "messages": "Messages",
     "availability": "Disponibilités",
-    "places": "Lieux culturels"
+    "places": "Lieux culturels",
+    "sign_in": "Se connecter"
   },
   "footer": {
     "description": "Une plateforme culturelle numérique pour les artistes belges indépendants, créée par MonsPax ASBL.",

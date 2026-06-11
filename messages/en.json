@@ -35,7 +35,8 @@
     "edit_profile": "Edit my profile",
     "messages": "Messages",
     "availability": "Availability",
-    "places": "Cultural venues"
+    "places": "Cultural venues",
+    "sign_in": "Sign in"
   },
   "footer": {
     "description": "A digital cultural platform for independent Belgian artists, created by MonsPax ASBL.",
